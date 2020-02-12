@@ -1,0 +1,9 @@
+.gradle/
+app-props.txt
+build.gradle.kts
+build/
+derby.log
+gradle/
+gradlew
+gradlew.bat
+.idea/
