@@ -1,5 +1,7 @@
 package com.jumo.demo.urlshortener
 
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -27,15 +29,22 @@ class UrlsController(@Autowired private val service: LinkService) {
 @Controller
 class RedirectController(private val service: LinkService) {
 
+    var logger = LogManager.getLogger()
+
     @GetMapping("/{shortUrl}")
     fun redirect(@PathVariable("shortUrl") shortUrl: String): ResponseEntity<Any> {
         val url: Url? = service.findByShortUrl(shortUrl)
 
         if (url == null) {
+            logger.info("URL with hash $shortUrl not found!")
+
             return ResponseEntity(HttpStatus.NOT_FOUND)
         } else {
+            logger.info("URL with hash $shortUrl retrieved")
+
             val headers = HttpHeaders()
             headers.add("Location", url.longUrl)
+
             return ResponseEntity("", headers, HttpStatus.FOUND)
         }
     }
